@@ -17,7 +17,7 @@ iris_with_missing = iris %>%
 
 ##Problem 1
 ```{r}
-#input is a vector
+#function to fill missing values
 fill_na = function(x) {
   
   if (is.numeric(x)) { 
@@ -34,9 +34,33 @@ fill_na = function(x) {
   
 }
 
+#map function over iris_with_missing
 iris_filled = map(iris_with_missing, fill_na)
 
 ```
+```{r}
+#function to read in files
+read_in = function(x) {
+  
+  read.csv(str_c("data\\",  x))
+  
+}
 
+
+#read in using map and tidy
+trial = map_df(list.files("data"), read_in) %>%
+  mutate(patient_id = 1:20,
+         arm = c(rep("control", 10), rep("experimental", 10))
+         ) %>%
+  pivot_longer(cols = 1:8,
+               names_to = "week", 
+               names_prefix = "week_", 
+               values_to = "measure")
+
+#spaghetti plot
+trial %>%
+  ggplot(aes(x = week, y = measure, group = patient_id, color = arm)) +
+  geom_line()
+```
 
 
