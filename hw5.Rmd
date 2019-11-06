@@ -68,6 +68,7 @@ At week 1, the groups preformed approximately equal, but separated as time proge
 
 ##Problem 3
 ```{r}
+set.seed(10)
 #fix values
 n = 30
 b_0 = 2
@@ -77,7 +78,7 @@ x = rnorm(n)
 #define model and extract estimate and p-value
 model_generate = function(n , b_0, b_1, sig_2, x ) {
 
-  e = rnorm(n, sd = sig_2)
+  e = rnorm(n, sd = sqrt(sig_2))
   y = b_0 + b_1 * x + e
   results = lm(y~x)
   broom::tidy(results)[2, c(2, 5)]
@@ -112,6 +113,7 @@ results =
   unnest(estimate_dfs) %>%
   as.data.frame() 
 
+
 #power plot
 results %>%
   mutate(rejected = ifelse(p.value < 0.05, 1, 0)) %>%
@@ -121,6 +123,7 @@ results %>%
   geom_col(width = .5) +
   xlab("True Slope Parameter") +
   ylab("Proportion of Significant Tests") 
+
 
 #average plot
 sig = results %>%
@@ -133,8 +136,7 @@ results %>%
   summarise(estimate_avg = mean(estimate)) %>%
   ggplot(aes(x = b_1, y = estimate_avg)) +
   geom_line(aes(color = "black")) +
-  geom_line(data = sig,
-            aes(color = "red")) +
+  geom_line(data = sig, aes(color = "red")) +
   scale_color_manual(name = "Results", 
                      values = c("black", "red"),
                      labels = c("Total", "Rejected")) +
@@ -143,6 +145,6 @@ results %>%
 
 ```
 
-The two lines are different because the rejected samples contain estimated values that were significantly greater than our null value of 0. Therefore, the average estimated value among rejected samples is larger than the average among all samples.
+The two lines are different because the rejected samples contain estimated values that were significantly greater than our null value of 0. Therefore, the average estimated value among rejected samples is larger than the average among all samples. As the true beta 1 increases, the lines converge because more tests are rejected since the true beta 1 is further away from the null.
 
 

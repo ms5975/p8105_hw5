@@ -74,6 +74,7 @@ Problem 3
 ---------
 
 ``` r
+set.seed(10)
 #fix values
 n = 30
 b_0 = 2
@@ -83,7 +84,7 @@ x = rnorm(n)
 #define model and extract estimate and p-value
 model_generate = function(n , b_0, b_1, sig_2, x ) {
 
-  e = rnorm(n, sd = sig_2)
+  e = rnorm(n, sd = sqrt(sig_2))
   y = b_0 + b_1 * x + e
   results = lm(y~x)
   broom::tidy(results)[2, c(2, 5)]
@@ -108,12 +109,12 @@ sim_results(n, b_0, b_1 = 0, sig_2, x) %>%
     ## # A tibble: 6 x 2
     ##   estimate p.value
     ##      <dbl>   <dbl>
-    ## 1    14.3   0.207 
-    ## 2    15.3   0.208 
-    ## 3     3.08  0.720 
-    ## 4    19.7   0.144 
-    ## 5    20.6   0.0761
-    ## 6   -12.1   0.391
+    ## 1   -2.44   0.0895
+    ## 2   -1.54   0.316 
+    ## 3   -0.270  0.851 
+    ## 4    0.860  0.581 
+    ## 5   -1.83   0.209 
+    ## 6   -0.817  0.605
 
 ``` r
 #results for B0 in 1:6
@@ -128,6 +129,7 @@ results =
   select(-output_lists) %>%
   unnest(estimate_dfs) %>%
   as.data.frame() 
+
 
 #power plot
 results %>%
@@ -154,8 +156,7 @@ results %>%
   summarise(estimate_avg = mean(estimate)) %>%
   ggplot(aes(x = b_1, y = estimate_avg)) +
   geom_line(aes(color = "black")) +
-  geom_line(data = sig,
-            aes(color = "red")) +
+  geom_line(data = sig, aes(color = "red")) +
   scale_color_manual(name = "Results", 
                      values = c("black", "red"),
                      labels = c("Total", "Rejected")) +
@@ -165,4 +166,4 @@ results %>%
 
 ![](hw5_files/figure-markdown_github/unnamed-chunk-4-2.png)
 
-The two lines are different because the rejected samples contain estimated values that were significantly greater than our null value of 0. Therefore, the average estimated value among rejected samples is larger than the average among all samples.
+The two lines are different because the rejected samples contain estimated values that were significantly greater than our null value of 0. Therefore, the average estimated value among rejected samples is larger than the average among all samples. As the true beta 1 increases, the lines converge because more tests are rejected since the true beta 1 is further away from the null.
