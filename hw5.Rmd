@@ -1,11 +1,11 @@
 ---
-title: "Homework 6"
+title: "Homework 5"
 author: "Madison Stoms"
 date: "November 4, 2019"
 output: github_document
 ---
 
-```{r}
+```{r, message=F}
 library(tidyverse)
 
 set.seed(10)
@@ -36,8 +36,8 @@ fill_na = function(x) {
 
 #map function over iris_with_missing
 iris_filled = map(iris_with_missing, fill_na)
-
 ```
+##Problem 2
 ```{r}
 #function to read in files
 read_in = function(x) {
@@ -61,8 +61,12 @@ trial = map_df(list.files("data"), read_in) %>%
 trial %>%
   ggplot(aes(x = week, y = measure, group = patient_id, color = arm)) +
   geom_line()
+
 ```
 
+At week 1, the groups preformed approximately equal, but separated as time progessed. All members of the experimental group preformed better than all members of the control group at week 8. Therefore, the intervention was effective in increasing the outcome of interest.
+
+##Problem 3
 ```{r}
 #fix values
 n = 30
@@ -70,6 +74,7 @@ b_0 = 2
 sig_2 = 50
 x = rnorm(n)
 
+#define model and extract estimate and p-value
 model_generate = function(n , b_0, b_1, sig_2, x ) {
 
   e = rnorm(n, sd = sig_2)
@@ -79,6 +84,7 @@ model_generate = function(n , b_0, b_1, sig_2, x ) {
   
 }
 
+#generate 1000 models, test, and bind results
 sim_results = function(n, b_0, b_1, sig_2, x) {
   
   rerun(1000, model_generate(n, b_0, b_1, sig_2, x)) %>%
@@ -93,6 +99,7 @@ sim_results(n, b_0, b_1 = 0, sig_2, x) %>%
   head()
 
 
+#results for B0 in 1:6
 results = 
   tibble(b_1 = 1:6) %>%
   mutate(
@@ -103,7 +110,7 @@ results =
   ) %>%
   select(-output_lists) %>%
   unnest(estimate_dfs) %>%
-  as.data.frame()
+  as.data.frame() 
 
 #power plot
 results %>%
@@ -130,12 +137,12 @@ results %>%
             aes(color = "red")) +
   scale_color_manual(name = "Results", 
                      values = c("black", "red"),
-                     labels = c("Total", "Rejected"))
-
-
-
+                     labels = c("Total", "Rejected")) +
+  xlab("Beta 1") +
+  ylab("Average Estiamated Beta 1")
 
 ```
 
+The two lines are different because the rejected samples contain estimated values that were significantly greater than our null value of 0. Therefore, the average estimated value among rejected samples is larger than the average among all samples.
 
 

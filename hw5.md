@@ -1,24 +1,11 @@
-Homework 6
+Homework 5
 ================
 Madison Stoms
 November 4, 2019
 
 ``` r
 library(tidyverse)
-```
 
-    ## -- Attaching packages ------------------------------------ tidyverse 1.2.1 --
-
-    ## v ggplot2 3.2.1     v purrr   0.3.2
-    ## v tibble  2.1.3     v dplyr   0.8.3
-    ## v tidyr   1.0.0     v stringr 1.4.0
-    ## v readr   1.3.1     v forcats 0.4.0
-
-    ## -- Conflicts --------------------------------------- tidyverse_conflicts() --
-    ## x dplyr::filter() masks stats::filter()
-    ## x dplyr::lag()    masks stats::lag()
-
-``` r
 set.seed(10)
 
 iris_with_missing = iris %>% 
@@ -51,6 +38,9 @@ fill_na = function(x) {
 iris_filled = map(iris_with_missing, fill_na)
 ```
 
+Problem 2
+---------
+
 ``` r
 #function to read in files
 read_in = function(x) {
@@ -78,6 +68,11 @@ trial %>%
 
 ![](hw5_files/figure-markdown_github/unnamed-chunk-3-1.png)
 
+At week 1, the groups preformed approximately equal, but separated as time progessed. All members of the experimental group preformed better than all members of the control group at week 8. Therefore, the intervention was effective in increasing the outcome of interest.
+
+Problem 3
+---------
+
 ``` r
 #fix values
 n = 30
@@ -85,6 +80,7 @@ b_0 = 2
 sig_2 = 50
 x = rnorm(n)
 
+#define model and extract estimate and p-value
 model_generate = function(n , b_0, b_1, sig_2, x ) {
 
   e = rnorm(n, sd = sig_2)
@@ -94,6 +90,7 @@ model_generate = function(n , b_0, b_1, sig_2, x ) {
   
 }
 
+#generate 1000 models, test, and bind results
 sim_results = function(n, b_0, b_1, sig_2, x) {
   
   rerun(1000, model_generate(n, b_0, b_1, sig_2, x)) %>%
@@ -119,6 +116,7 @@ sim_results(n, b_0, b_1 = 0, sig_2, x) %>%
     ## 6   -12.1   0.391
 
 ``` r
+#results for B0 in 1:6
 results = 
   tibble(b_1 = 1:6) %>%
   mutate(
@@ -129,7 +127,7 @@ results =
   ) %>%
   select(-output_lists) %>%
   unnest(estimate_dfs) %>%
-  as.data.frame()
+  as.data.frame() 
 
 #power plot
 results %>%
@@ -160,7 +158,11 @@ results %>%
             aes(color = "red")) +
   scale_color_manual(name = "Results", 
                      values = c("black", "red"),
-                     labels = c("Total", "Rejected"))
+                     labels = c("Total", "Rejected")) +
+  xlab("Beta 1") +
+  ylab("Average Estiamated Beta 1")
 ```
 
 ![](hw5_files/figure-markdown_github/unnamed-chunk-4-2.png)
+
+The two lines are different because the rejected samples contain estimated values that were significantly greater than our null value of 0. Therefore, the average estimated value among rejected samples is larger than the average among all samples.
