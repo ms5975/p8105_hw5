@@ -144,6 +144,8 @@ results %>%
 
 ![](hw5_files/figure-markdown_github/unnamed-chunk-4-1.png)
 
+The power increases with the effect size becauase, as the true beta increases, the probability of correctly detecting that the estimate is different that the null value of 0 increases.
+
 ``` r
 #average plot
 sig = results %>%
@@ -164,6 +166,6 @@ results %>%
   ylab("Average Estiamated Beta 1")
 ```
 
-![](hw5_files/figure-markdown_github/unnamed-chunk-4-2.png)
+![](hw5_files/figure-markdown_github/unnamed-chunk-5-1.png)
 
 The two lines are different because the rejected samples contain estimated values that were significantly greater than our null value of 0. Therefore, the average estimated value among rejected samples is larger than the average among all samples. As the true beta 1 increases, the lines converge because more tests are rejected since the true beta 1 is further away from the null.

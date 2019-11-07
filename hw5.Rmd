@@ -123,8 +123,11 @@ results %>%
   geom_col(width = .5) +
   xlab("True Slope Parameter") +
   ylab("Proportion of Significant Tests") 
+```
 
+The power increases with the effect size becauase, as the true beta increases, the probability of correctly detecting that the estimate is different that the null value of 0 increases.
 
+```{r}
 #average plot
 sig = results %>%
   filter(p.value < 0.05) %>%
